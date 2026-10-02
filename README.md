@@ -2,27 +2,25 @@
 
 **AI Decision Engine for Business Data — PS 04**
 
-Decisio turns raw business data into evidence-backed decisions. The prototype follows the deck's flow: upload data → ask a natural-language business question → compute evidence → simulate a decision → stress-test assumptions.
+Updated from the supplied demo references into a judge-friendly flow: **Data → Dashboard → Answer → Evidence → Decision Simulator → Stress Test → Decision Reliability**.
 
 ## Live demo
-https://decisio.onrender.com
+https://decisio-gtfj.onrender.com
 
-## What works
-- CSV upload and deterministic analytics
-- Revenue by region
-- Profit margin by category
-- Transparent price-change simulator
-- Evidence table tied to computed aggregates
-- Reliability guard for unsupported questions
-- Responsive judge-friendly interface
-- Demo retail dataset
+## Current prototype
+- CSV + XLSX upload
+- KPI dashboard and region/category summaries
+- Natural-language question presets
+- Evidence table with computed values
+- Decision simulator with price scenarios
+- Stress-test sensitivity flag
+- Decision Reliability / Validation Guard
+- Responsive sidebar workspace
 
-## Architecture
-The submission deck describes a Next.js/React interface, FastAPI API layer, Pandas/DuckDB computation, evidence layer, simulator, LLM explanation layer and validation guard. This repository contains the deployable browser prototype of that experience; deterministic analytics are usable without an API key.
-
-## Local run
-Open `index.html` directly, or serve the folder with any static HTTP server.
+The pitch deck describes a fuller Next.js/React + FastAPI + Pandas/DuckDB + evidence + simulator + LLM + validation architecture. This repository is the deployable browser prototype; deterministic analytics run without an API key.
 
 ## Submission
 Problem Statement: **PS 04 - AI Decision Engine for Business Data**  
-Project: **Decisio**
+Project: **Decisio**  
+GitHub: https://github.com/boutsoniya/Decisio  
+Live Demo: https://decisio-gtfj.onrender.com
