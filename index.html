@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Decisio — AI Decision Engine</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="top"><div class="brand"><span class="mark">D</span><div><b>Decisio</b><small>AI Decision Engine for Business Data</small></div></div><div class="pill">PS 04 • Evidence-first</div></header>
+<main>
+<section class="hero"><div><span class="eyebrow">DECIDE WITH EVIDENCE</span><h1>Turn business data into<br><em>defensible decisions.</em></h1><p>Upload a CSV, ask a business question, inspect the evidence, then simulate the decision before acting.</p></div>
+<div class="hero-card"><div class="mini-label">DECISION LOOP</div><div class="loop"><span>Data</span><i>→</i><span>Evidence</span><i>→</i><span>Decision</span><i>→</i><span>Stress-test</span></div></div></section>
+<section class="grid">
+<div class="panel upload"><div class="panel-head"><div><span class="step">01</span><h2>Bring your data</h2></div><span id="status" class="status">Demo dataset ready</span></div>
+<label class="drop" id="drop"><input id="file" type="file" accept=".csv,.xlsx,.xls"><strong>Drop CSV here</strong><span>or click to browse • XLSX supported in the interface</span></label>
+<div class="sample-row"><button id="loadDemo" class="ghost">Use demo retail data</button><span id="meta">12 rows • 7 fields</span></div></div>
+<div class="panel ask"><div class="panel-head"><div><span class="step">02</span><h2>Ask a business question</h2></div></div>
+<div class="question"><input id="question" value="Which region is driving the most revenue?"><button id="ask">Analyze</button></div>
+<div class="chips"><button data-q="Which region is driving the most revenue?">Revenue by region</button><button data-q="Which category has the best profit margin?">Margin by category</button><button data-q="Where should we increase price by 10%?">10% price scenario</button></div></div>
+</section>
+<section class="dashboard">
+<div class="panel evidence"><div class="panel-head"><div><span class="step">03</span><h2>Evidence & answer</h2></div><span class="confidence" id="confidence">High confidence</span></div>
+<div id="answer" class="answer"><h3>North is currently the strongest revenue region.</h3><p>The conclusion is computed from the uploaded rows, not invented by the language model.</p></div>
+<div id="evidenceTable"></div></div>
+<div class="panel simulator"><div class="panel-head"><div><span class="step">04</span><h2>Decision simulator</h2></div></div>
+<p class="muted">Stress-test a price change against the current dataset.</p><label class="slider-label">Price change <b id="priceVal">10%</b></label><input id="price" type="range" min="-20" max="30" value="10">
+<div class="sim-cards"><div><small>Projected revenue</small><strong id="simRevenue">₹0</strong></div><div><small>Projected profit</small><strong id="simProfit">₹0</strong></div><div><small>Change vs baseline</small><strong id="simDelta">0%</strong></div></div>
+<div class="stress"><b>Stress-test</b><span id="stressText">Base case calculated from observed revenue and profit.</span></div></div>
+</section>
+<section class="panel reliability"><div class="panel-head"><div><span class="step">05</span><h2>Decision reliability</h2></div><span class="guard">VALIDATION GUARD</span></div>
+<div class="checks"><div><span>✓</span><b>Evidence trace</b><small>Answer tied to computed aggregates</small></div><div><span>✓</span><b>Assumption visible</b><small>Scenario uses a transparent price-change assumption</small></div><div><span>✓</span><b>Unsupported claims blocked</b><small>Questions outside available fields are flagged</small></div></div></section>
+</main><footer>Decisio • Built for the AI Decision Engine for Business Data track • Demo uses deterministic browser-side analytics.</footer>
+<script src="app.js"></script></body></html>
