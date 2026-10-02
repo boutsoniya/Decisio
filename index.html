@@ -1,5 +1,138 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Decisio</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script></head><body><aside><div class="brand"><b>D</b><span><strong>Decisio</strong><small>AI Decision Engine</small></span></div><label>WORKSPACE</label><button class="nav active" data-page="dashboard">▦ Dashboard</button><button class="nav" data-page="answer">⌁ Answer</button><button class="nav" data-page="simulator">◈ Decision Simulator</button><button class="nav" data-page="reliability">◉ Decision Reliability</button><label>DATA</label><button class="nav" id="uploadNav">↥ Upload dataset</button><button class="nav" id="demoNav">◇ Demo dataset</button><div class="foot">● Analytics engine ready<br><small>Evidence-first mode</small></div></aside><main><header><span><b>Decisio</b> / <i id="crumb">Dashboard</i></span><span class="track">PS 04</span></header>
-<section id="dashboard" class="page active"><div class="head"><div><em>BUSINESS DECISION WORKSPACE</em><h1>Dashboard</h1><p>Move from raw business data to an evidence-backed decision.</p></div><button class="primary" id="uploadBtn">Upload CSV / XLSX</button></div><div class="strip"><b id="dataset">Demo retail dataset</b><span id="meta">12 rows · 5 fields · ● Ready</span></div><div class="kpis"><div><small>Total Revenue</small><b id="rev">₹0</b><span>Observed rows</span></div><div><small>Total Profit</small><b id="profit">₹0</b><span>Computed from Profit</span></div><div><small>Profit Margin</small><b id="margin">0%</b><span>Profit ÷ Revenue</span></div><div><small>Records</small><b id="records">0</b><span>Rows loaded</span></div></div><div class="twocol"><div class="card"><div class="ct"><b>Revenue by region</b><button data-page="answer">View evidence →</button></div><div id="regions" class="bars"></div></div><div class="card"><div class="ct"><b>Profit margin by category</b><button data-page="answer">Analyze →</button></div><div id="cats" class="bars"></div></div></div><div class="card ask"><div><em>ASK DECISIO</em><h2>What should I know about this data?</h2><p>Ask a business question and inspect the calculation behind the answer.</p></div><div><div class="askrow"><input id="q" value="Which region is driving the most revenue?"><button class="primary" id="ask">Analyze</button></div><div class="chips"><button data-q="Which region is driving the most revenue?">Revenue by region</button><button data-q="Which category has the best profit margin?">Margin by category</button><button data-q="Where should we increase price by 10%?">10% price scenario</button></div></div></div><div id="upload" class="upload"><b>Bring your business data</b><span>CSV / XLSX with a header row; Revenue and Profit are used for analytics.</span><label class="filebtn">Choose file<input id="file" type="file" accept=".csv,.xlsx,.xls"></label></div></section>
-<section id="answer" class="page"><div class="head"><div><em>EVIDENCE-FIRST ANALYSIS</em><h1>Answer</h1><p>Computed answer with a visible evidence trail.</p></div><span class="badge">HIGH CONFIDENCE</span></div><div class="answergrid"><div class="card"><small>COMPUTED ANSWER</small><h2 id="atitle"></h2><p id="atext"></p><div id="etable"></div></div><div class="card side"><b>Why this answer?</b><p id="method"></p><hr><span>Evidence coverage <b>100%</b></span><hr><span>Unsupported assumptions <b>0</b></span><button class="primary full" data-page="simulator">Stress-test decision →</button></div></div></section>
-<section id="simulator" class="page"><div class="head"><div><em>DECISION SIMULATION</em><h1>Decision Simulator</h1><p>Test a decision assumption against the observed baseline.</p></div><span class="badge amber">PRICE SCENARIO</span></div><div class="simgrid"><div class="card"><div class="ct"><b>Price-change scenario</b><span id="pv">+10%</span></div><input id="slider" type="range" min="-20" max="30" value="10"><div class="scale"><span>-20%</span><span>0%</span><span>+30%</span></div><div class="simk"><div>Baseline revenue<b id="br">₹0</b></div><div>Scenario revenue<b id="sr">₹0</b></div><div>Baseline profit<b id="bp">₹0</b></div><div>Scenario profit<b id="sp">₹0</b></div></div><div class="note"><b>Assumption</b><span id="note">Proportional price/revenue relationship; not a forecast guarantee.</span></div></div><div class="card"><em>STRESS TEST</em><h3>Decision sensitivity</h3><div class="meter"><i id="meter"></i></div><p>Scenario delta <b id="delta">+10%</b></p><p>Reliability flag <b id="flag">Transparent</b></p><small>Large price moves should be validated with elasticity data before operational use.</small></div></div><div class="card action"><div><b>Inspect the validation guard.</b><span>Evidence → decision → stress-test → reliability</span></div><button class="primary" data-page="reliability">View reliability →</button></div></section>
-<section id="reliability" class="page"><div class="head"><div><em>VALIDATION GUARD</em><h1>Decision Reliability</h1><p>Checks keep conclusions tied to observable evidence.</p></div><span class="badge">● GUARD ACTIVE</span></div><div class="relgrid"><div class="card gauge"><small>Confidence score</small><b>92<small>/100</small></b><strong>Evidence-backed</strong><p>Aggregates trace directly to loaded data.</p></div><div class="card gauge"><small>Stress-test rounds</small><b>6<small> tests</small></b><strong>Scenario coverage</strong><p>Price changes can be inspected across assumptions.</p></div><div class="card checks"><div class="ct"><b>Validation checks</b><span>PASS</span></div><p>✓ <b>Evidence trace</b> — answer tied to computed aggregates</p><p>✓ <b>Assumption visible</b> — scenario assumption shown</p><p>✓ <b>Unsupported claims</b> — unknown fields are guarded</p></div></div><div class="card action"><div><b>Evidence-first workflow</b><span>Data → Calculation → Evidence → Decision → Stress-test</span></div><button class="primary" data-page="dashboard">Back to dashboard</button></div></section></main><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Decisio — AI Decision Engine</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">D</div><div><strong>Decisio</strong><small>AI Decision Engine</small></div></div>
+  <div class="workspace-label">WORKSPACE</div>
+  <button class="nav active" data-page="dashboard"><span>▦</span> Dashboard</button>
+  <button class="nav" data-page="answer"><span>⌁</span> Answer</button>
+  <button class="nav" data-page="simulator"><span>◈</span> Decision Simulator</button>
+  <button class="nav" data-page="reliability"><span>◉</span> Decision Reliability</button>
+  <div class="workspace-label data-label">DATA</div>
+  <button class="nav" id="uploadNav"><span>↥</span> Upload dataset</button>
+  <button class="nav" id="demoNav"><span>◇</span> Demo dataset</button>
+  <div class="sidebar-bottom"><span class="status-dot"></span> Analytics engine ready<small>Evidence-first mode</small></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div><b>Dashboard</b><span class="slash">/</span><span id="crumb">Visual Summary</span></div>
+  <div class="top-actions"><span class="ps">PS-04</span><button class="ghost">↻ Reset</button><button class="primary small" id="topAnalyze">Analyze</button></div>
+</header>
+
+<section id="dashboard" class="page active">
+  <div class="page-head">
+    <div><span class="eyebrow">BUSINESS DECISION WORKSPACE</span><h1>Dashboard</h1><p>Turn raw business data into a defensible next action.</p></div>
+    <button class="primary" id="uploadBtn">Upload CSV / XLSX</button>
+  </div>
+
+  <div class="data-strip">
+    <div><span class="data-icon">▤</span><div><b id="dataset">Demo retail dataset</b><small id="meta">12 rows · 4 fields · ● Ready</small></div></div>
+    <span class="ready-pill">● Ready</span>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="content-col">
+      <div class="card hero-card">
+        <div class="card-head"><div><b>Revenue by region</b><small>Observed revenue distribution</small></div><button class="link-btn" data-page="answer">View evidence →</button></div>
+        <div class="chart-area"><div id="regionBars" class="region-bars"></div></div>
+      </div>
+
+      <div class="two-cards">
+        <div class="card">
+          <div class="card-head"><div><b>Profit margin by category</b><small>Profit ÷ Revenue</small></div><button class="link-btn" data-page="answer">Analyze →</button></div>
+          <div id="categoryBars" class="category-bars"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><b>Business health</b><small>Current dataset snapshot</small></div><span class="mini-badge">LIVE</span></div>
+          <div class="health">
+            <div><span>Total revenue</span><b id="rev">₹0</b></div>
+            <div><span>Total profit</span><b id="profit">₹0</b></div>
+            <div><span>Profit margin</span><b id="margin">0%</b></div>
+            <div><span>Records</span><b id="records">0</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card ask-card">
+        <div class="ask-copy"><span class="eyebrow">ASK DECISIO</span><h2>What should I know about this data?</h2><p>Ask a business question and inspect the calculation behind the answer.</p></div>
+        <div class="ask-box">
+          <div class="ask-row"><input id="q" value="Which region is driving the most revenue?"><button class="primary" id="ask">Analyze</button></div>
+          <div class="chips"><button data-q="Which region is driving the most revenue?">Revenue by region</button><button data-q="Which category has the best profit margin?">Margin by category</button><button data-q="What if we increase price by 10%?">10% price scenario</button></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="insight-col">
+      <div class="card insight-card">
+        <div class="card-head"><div><b>Priority insights</b><small>Evidence-backed signals</small></div><span class="count">3</span></div>
+        <div class="insight-item"><span class="insight-icon">↗</span><div><b id="insight1">North leads revenue</b><p id="insight1text">Highest observed regional revenue.</p></div></div>
+        <div class="insight-item"><span class="insight-icon">%</span><div><b id="insight2">Electronics leads margin</b><p id="insight2text">Highest observed category margin.</p></div></div>
+        <div class="insight-item"><span class="insight-icon">⌁</span><div><b>Scenario ready</b><p>Test price assumptions before acting.</p></div></div>
+      </div>
+      <div class="card workflow-card"><span class="eyebrow">DECISION FLOW</span><div class="flow"><span>Data</span><i>→</i><span>Answer</span><i>→</i><span>Evidence</span><i>→</i><span>Stress-test</span></div><button class="primary full" data-page="simulator">Open simulator →</button></div>
+    </aside>
+  </div>
+
+  <div id="upload" class="upload-panel"><div><b>Bring your business data</b><p>CSV / XLSX with a header row. Revenue and Profit are used for analytics.</p></div><label class="file-btn">Choose file<input id="file" type="file" accept=".csv,.xlsx,.xls"></label></div>
+</section>
+
+<section id="answer" class="page">
+  <div class="page-head"><div><span class="eyebrow">EVIDENCE-FIRST ANALYSIS</span><h1>Answer</h1><p id="answerSub">Computed answer with a visible evidence trail.</p></div><span class="confidence-pill">● HIGH CONFIDENCE</span></div>
+  <div class="answer-layout">
+    <div class="content-col">
+      <div class="card answer-card">
+        <div class="answer-top"><div><span class="label">COMPUTED ANSWER</span><h2 id="atitle"></h2><p id="atext"></p></div><span class="verified">✓ Verified</span></div>
+        <div class="metric-row" id="answerMetrics"></div>
+        <div id="answerCharts" class="answer-charts"></div>
+      </div>
+      <div class="card evidence-card"><div class="card-head"><div><b>Evidence table</b><small>Every value traces to loaded rows.</small></div><span class="table-status">Evidence linked</span></div><div id="etable" class="table-wrap"></div></div>
+    </div>
+    <aside class="right-stack">
+      <div class="card method-card"><span class="label">WHY THIS ANSWER?</span><p id="method"></p><div class="coverage"><span>Evidence coverage</span><b>100%</b></div><div class="coverage"><span>Unsupported assumptions</span><b>0</b></div></div>
+      <div class="card scenario-card"><div class="card-head"><div><b>Price scenario</b><small>Transparent assumption</small></div><button class="link-btn" data-page="simulator">Open →</button></div><div class="sparkline"><svg viewBox="0 0 220 70" preserveAspectRatio="none"><path d="M0 60 C30 58 45 50 70 52 S105 38 125 42 S165 22 190 28 S205 15 220 8" fill="none"/></svg></div><div class="scenario-line"><span>Baseline</span><b id="answerBase">₹0</b></div><div class="scenario-line"><span>+10% scenario</span><b id="answerScenario">₹0</b></div></div>
+      <button class="primary full" data-page="simulator">Stress-test decision →</button>
+    </aside>
+  </div>
+</section>
+
+<section id="simulator" class="page">
+  <div class="page-head"><div><span class="eyebrow">DECISION SIMULATION</span><h1>Decision Simulator</h1><p>Compare an assumption against the observed baseline.</p></div><span class="amber-pill">PRICE SCENARIO</span></div>
+  <div class="sim-layout">
+    <div class="content-col">
+      <div class="card sim-card"><div class="card-head"><div><b>Price-change scenario</b><small>Adjust the assumption and inspect impact.</small></div><strong id="pv">+10%</strong></div>
+        <input id="slider" type="range" min="-20" max="30" value="10"><div class="scale"><span>-20%</span><span>0%</span><span>+30%</span></div>
+        <div class="scenario-grid"><div><span>Baseline revenue</span><b id="br">₹0</b></div><div><span>Scenario revenue</span><b id="sr">₹0</b></div><div><span>Baseline profit</span><b id="bp">₹0</b></div><div><span>Scenario profit</span><b id="sp">₹0</b></div></div>
+        <div class="assumption"><b>Assumption</b><span id="note">Proportional price/revenue relationship; not a forecast guarantee.</span></div>
+      </div>
+      <div class="card comparison"><div class="card-head"><div><b>Scenario comparison</b><small>Observed baseline vs modeled scenario</small></div><span id="delta" class="delta">+10%</span></div><div class="compare-bars"><div><span>Baseline</span><i style="width:65%"></i></div><div><span>Scenario</span><i id="scenarioBar" style="width:72%"></i></div></div></div>
+    </div>
+    <aside class="right-stack">
+      <div class="card stress-card"><span class="label">STRESS TEST</span><h3>Decision sensitivity</h3><div class="meter"><i id="meter"></i></div><div class="stress-stat"><span>Scenario delta</span><b id="delta2">+10%</b></div><div class="stress-stat"><span>Reliability flag</span><b id="flag">Transparent</b></div><p>Large price moves should be validated with elasticity data before operational use.</p></div>
+      <div class="card flow-card"><span class="label">VALIDATION</span><p>Evidence → decision → stress-test → reliability</p><button class="primary full" data-page="reliability">View reliability →</button></div>
+    </aside>
+  </div>
+</section>
+
+<section id="reliability" class="page">
+  <div class="page-head"><div><span class="eyebrow">VALIDATION GUARD</span><h1>Decision Reliability</h1><p>Checks keep conclusions tied to observable evidence.</p></div><span class="guard-pill">● GUARD ACTIVE</span></div>
+  <div class="reliability-grid">
+    <div class="card gauge-card"><span class="label">CONFIDENCE SCORE</span><div class="gauge"><div class="gauge-arc"></div><b>92<small>/100</small></b></div><strong>Evidence-backed</strong><p>Aggregates trace directly to loaded data.</p></div>
+    <div class="card gauge-card"><span class="label">STRESS-TEST BOUNDS</span><div class="gauge"><div class="gauge-arc second"></div><b>6<small> tests</small></b></div><strong>Scenario coverage</strong><p>Price changes can be inspected across assumptions.</p></div>
+    <div class="card reliability-chart"><div class="card-head"><div><b>Reliability checks</b><small>Current validation state</small></div><span class="table-status">PASS</span></div><div class="reliability-bars"><div><span>Evidence trace</span><i style="width:100%"></i><b>100%</b></div><div><span>Assumption visibility</span><i style="width:94%"></i><b>94%</b></div><div><span>Unsupported claims</span><i style="width:100%"></i><b>0</b></div></div></div>
+  </div>
+  <div class="card checks-card"><div class="card-head"><div><b>Validation checks</b><small>What the guard is checking</small></div><span class="table-status">PASS</span></div><div class="check-list"><p>✓ <b>Evidence trace</b><span>Answer tied to computed aggregates</span></p><p>✓ <b>Assumption visible</b><span>Scenario assumption shown</span></p><p>✓ <b>Unsupported claims</b><span>Unknown fields are guarded</span></p><p>✓ <b>Human approval</b><span>Decision support does not execute actions</span></p></div></div>
+  <div class="card action-card"><div><b>Evidence-first workflow</b><span>Data → Calculation → Evidence → Decision → Stress-test</span></div><button class="primary" data-page="dashboard">Back to dashboard</button></div>
+</section>
+</main></div>
+<script src="app.js"></script>
+</body>
+</html>
