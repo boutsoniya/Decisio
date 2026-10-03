@@ -72,12 +72,13 @@ document.querySelectorAll("[data-q]").forEach(x=>x.addEventListener("click",()=>
 $("ask").addEventListener("click",()=>{analyze($("q").value);page("answer")});$("topAnalyze").addEventListener("click",()=>{analyze($("q").value);page("answer")});
 $("slider").addEventListener("input",sim);
 
-let walkthroughTimer=null;
+let walkthroughTimer=null, walkthroughTimers=[];
 function toast(title,textValue){
   const box=$("demoToast"); if(!box)return;
   $("toastTitle").textContent=title; $("toastText").textContent=textValue; box.classList.add("show");
 }
 function stopWalkthrough(){
+  walkthroughTimers.forEach(clearTimeout); walkthroughTimers=[];
   if(walkthroughTimer){clearTimeout(walkthroughTimer);walkthroughTimer=null}
   $("demoToast")?.classList.remove("show");
 }
@@ -94,15 +95,14 @@ function runWalkthrough(){
     [33000,"DONE · DECISION READY","Data → Answer → Evidence → Simulation → Reliability.","reliability"]
   ];
   stages.forEach(([delay,title,msg,target])=>{
-    setTimeout(()=>{
-      if(!$("demoToast")?.classList.contains("show") && delay!==0)return;
+    walkthroughTimers.push(setTimeout(()=>{
       page(target);
-      if(target==="answer"){$("q").value=delay<6000?"Which region is driving the most revenue?":"Which region is driving the most revenue?";analyze($("q").value)}
+      if(target==="answer"){$("q").value="Which region is driving the most revenue?";analyze($("q").value)}
       if(target==="simulator"){$("slider").value=delay>=20000?20:10;sim()}
       toast(title,msg);
-    },delay);
+    },delay));
   });
-  walkthroughTimer=setTimeout(()=>{toast("DONE · Decision ready","Walkthrough complete. You can now explore any screen manually.");walkthroughTimer=null},35000);
+  walkthroughTimer=setTimeout(()=>{walkthroughTimers=[];toast("DONE · Decision ready","Walkthrough complete. You can now explore any screen manually.");walkthroughTimer=null},35000);
 }
 $("walkthroughBtn")?.addEventListener("click",runWalkthrough);
 $("stopWalkthrough")?.addEventListener("click",stopWalkthrough);
@@ -110,7 +110,7 @@ $("dataHint")?.addEventListener("click",()=>toast("Evidence-first workflow","Upl
 $("uploadBtn").addEventListener("click",()=>{$("upload").classList.toggle("open");$("file").click()});
 $("uploadNav").addEventListener("click",()=>{$("upload").classList.add("open");page("dashboard");$("file").click()});
 $("demoNav").addEventListener("click",()=>{rows=normalizeRows([...demo]);$("dataset").textContent="Demo retail dataset";dashboard();analyze($("q").value);sim();page("dashboard")});
-function loadFile(f){const x=/\.(xlsx|xls)$/i.test(f.name),reader=new FileReader();reader.onload=z=>{try{if(x){const w=XLSX.read(new Uint8Array(z.target.result),{type:"array"});rows=normalizeRows(XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:""}))}else{const lines=z.target.result.trim().split(/\r?\n/);const h=lines.shift().split(",");rows=normalizeRows(lines.map(s=>{const v=s.split(",");const o={};h.forEach((k,i)=>o[k.trim()]=v[i]?.trim()||"");return o}))}$("dataset").textContent=f.name;dashboard();analyze($("q").value);sim()}catch(err){alert("Could not read file. Use CSV/XLSX with a header row.")}};x?reader.readAsArrayBuffer(f):reader.readAsText(f)}
+function loadFile(f){const x=/\.(xlsx|xls)$/i.test(f.name),reader=new FileReader();reader.onload=z=>{try{let parsed;if(x){const w=XLSX.read(new Uint8Array(z.target.result),{type:"array"});parsed=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:""})}else{const w=XLSX.read(z.target.result,{type:"string"});parsed=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:""})}if(!parsed.length){alert("This file has no data rows. Please choose a CSV/XLSX with a header row.");return}rows=normalizeRows(parsed);$("dataset").textContent=f.name;dashboard();analyze($("q").value);sim();page("dashboard")}catch(err){alert("Could not read file. Use CSV/XLSX with a header row.")}};x?reader.readAsArrayBuffer(f):reader.readAsText(f)}
 $("file").addEventListener("change",e=>{const f=e.target.files[0];if(f)loadFile(f)});
 function resetWorkspace(){schemaInfo={mapped:true,missing:[]};rows=[...demo];$("dataset").textContent="Demo retail dataset";$("q").value="Which region is driving the most revenue?";dashboard();analyze($("q").value);sim();page("dashboard");$("upload").classList.remove("open");$("file").value=""}
 function wireDropzone(){const dz=$("dropzone");if(!dz)return;["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag")}));["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("drag")}));dz.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)loadFile(f)})}
