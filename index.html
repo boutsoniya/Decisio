@@ -90,11 +90,27 @@
   <div class="answer-layout">
     <div class="content-col">
       <div class="card answer-card">
-        <div class="answer-top"><div><span class="label">COMPUTED ANSWER</span><h2 id="atitle"></h2><p id="atext"></p></div><span class="verified">✓ Verified</span></div>
+        <div class="answer-top"><div><span class="label">COMPUTED ANSWER</span><h2 id="atitle"></h2><p id="atext"></p></div><span class="verified">✓ Evidence linked</span></div>
         <div class="metric-row" id="answerMetrics"></div>
         <div id="answerCharts" class="answer-charts"></div>
+        <div class="decision-brief">
+          <div><span class="label">DECISION BRIEF</span><h3 id="briefTitle">What the data says</h3><p id="briefText">The current signal is computed from the loaded dataset.</p></div>
+          <div class="brief-actions"><button class="ghost-btn" data-page="simulator">Test assumption</button><button class="primary" data-page="reliability">Validate →</button></div>
+        </div>
       </div>
       <div class="card evidence-card"><div class="card-head"><div><b>Evidence table</b><small>Every value traces to loaded rows.</small></div><span class="table-status">Evidence linked</span></div><div id="etable" class="table-wrap"></div></div>
+      <div class="card trail-card">
+        <div class="card-head"><div><b>Decision trail</b><small>How Decisio moves from data to an action-ready view.</small></div><span class="trail-live">LIVE</span></div>
+        <div class="trail">
+          <div class="trail-item active"><span>01</span><div><b>Data</b><small id="trailData">Dataset loaded and fields detected.</small></div></div>
+          <div class="trail-line"></div>
+          <div class="trail-item active"><span>02</span><div><b>Answer</b><small id="trailAnswer">Question translated into a deterministic calculation.</small></div></div>
+          <div class="trail-line"></div>
+          <div class="trail-item"><span>03</span><div><b>Decision</b><small id="trailDecision">Inspect the evidence before changing an assumption.</small></div></div>
+          <div class="trail-line"></div>
+          <div class="trail-item"><span>04</span><div><b>Stress-test</b><small>Check sensitivity before operational use.</small></div></div>
+        </div>
+      </div>
     </div>
     <aside class="right-stack">
       <div class="card method-card"><span class="label">WHY THIS ANSWER?</span><p id="method"></p><div class="coverage"><span>Evidence coverage</span><b>100%</b></div><div class="coverage"><span>Unsupported assumptions</span><b>0</b></div></div>
