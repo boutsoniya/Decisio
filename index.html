@@ -25,7 +25,7 @@
 <main class="main">
 <header class="topbar">
   <div><b>Dashboard</b><span class="slash">/</span><span id="crumb">Visual Summary</span></div>
-  <div class="top-actions"><span class="ps">PS-04</span><button class="ghost">↻ Reset</button><button class="primary small" id="topAnalyze">Analyze</button></div>
+  <div class="top-actions"><span class="ps">PS-04</span><button class="ghost" id="resetBtn">↻ Reset</button><button class="primary small" id="topAnalyze">Analyze</button></div>
 </header>
 
 <section id="dashboard" class="page active">
@@ -34,7 +34,7 @@
     <button class="primary" id="uploadBtn">Upload CSV / XLSX</button>
   </div>
 
-  <div class="data-strip">
+  <div class="decision-steps" aria-label="Decisio workflow"><span class="step active"><b>01</b> Data</span><i>→</i><span class="step"><b>02</b> Answer</span><i>→</i><span class="step"><b>03</b> Evidence</span><i>→</i><span class="step"><b>04</b> Simulate</span><i>→</i><span class="step"><b>05</b> Stress-test</span></div><div class="data-strip">
     <div><span class="data-icon">▤</span><div><b id="dataset">Demo retail dataset</b><small id="meta">12 rows · 4 fields · ● Ready</small></div></div>
     <span class="ready-pill">● Ready</span>
   </div>
@@ -82,7 +82,7 @@
     </aside>
   </div>
 
-  <div id="upload" class="upload-panel"><div><b>Bring your business data</b><p>CSV / XLSX with a header row. Revenue and Profit are used for analytics.</p></div><label class="file-btn">Choose file<input id="file" type="file" accept=".csv,.xlsx,.xls"></label></div>
+  <div id="upload" class="upload-panel"><div><b>Bring your business data</b><p>CSV / XLSX with a header row. Revenue and Profit are used for analytics.</p></div><div class="upload-actions"><button class="ghost-btn" id="useDemo">Use demo data</button><label class="file-btn">Choose file<input id="file" type="file" accept=".csv,.xlsx,.xls"></label></div><div id="dropzone" class="dropzone">Drop CSV / XLSX here</div></div>
 </section>
 
 <section id="answer" class="page">
