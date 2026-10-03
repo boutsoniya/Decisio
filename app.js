@@ -71,6 +71,42 @@ document.querySelectorAll("[data-page]").forEach(x=>x.addEventListener("click",(
 document.querySelectorAll("[data-q]").forEach(x=>x.addEventListener("click",()=>{$("q").value=x.dataset.q;analyze(x.dataset.q);page("answer")}));
 $("ask").addEventListener("click",()=>{analyze($("q").value);page("answer")});$("topAnalyze").addEventListener("click",()=>{analyze($("q").value);page("answer")});
 $("slider").addEventListener("input",sim);
+
+let walkthroughTimer=null;
+function toast(title,textValue){
+  const box=$("demoToast"); if(!box)return;
+  $("toastTitle").textContent=title; $("toastText").textContent=textValue; box.classList.add("show");
+}
+function stopWalkthrough(){
+  if(walkthroughTimer){clearTimeout(walkthroughTimer);walkthroughTimer=null}
+  $("demoToast")?.classList.remove("show");
+}
+function runWalkthrough(){
+  stopWalkthrough();
+  resetWorkspace();
+  const stages=[
+    [0,"01 · DATA","Demo dataset loaded — fields are detected and ready.","dashboard"],
+    [4500,"02 · ANSWER","Revenue is aggregated by region from the observed rows.","answer"],
+    [9500,"03 · EVIDENCE","Inspect the calculation trail before taking a decision.","answer"],
+    [14000,"04 · SIMULATE","Now test a +10% price assumption against the baseline.","simulator"],
+    [20500,"05 · STRESS-TEST","Push the assumption and inspect the reliability flag.","simulator"],
+    [26500,"06 · RELIABILITY","The validation guard keeps assumptions visible.","reliability"],
+    [33000,"DONE · DECISION READY","Data → Answer → Evidence → Simulation → Reliability.","reliability"]
+  ];
+  stages.forEach(([delay,title,msg,target])=>{
+    setTimeout(()=>{
+      if(!$("demoToast")?.classList.contains("show") && delay!==0)return;
+      page(target);
+      if(target==="answer"){$("q").value=delay<6000?"Which region is driving the most revenue?":"Which region is driving the most revenue?";analyze($("q").value)}
+      if(target==="simulator"){$("slider").value=delay>=20000?20:10;sim()}
+      toast(title,msg);
+    },delay);
+  });
+  walkthroughTimer=setTimeout(()=>{toast("DONE · Decision ready","Walkthrough complete. You can now explore any screen manually.");walkthroughTimer=null},35000);
+}
+$("walkthroughBtn")?.addEventListener("click",runWalkthrough);
+$("stopWalkthrough")?.addEventListener("click",stopWalkthrough);
+$("dataHint")?.addEventListener("click",()=>toast("Evidence-first workflow","Upload data → ask a question → inspect evidence → simulate an assumption → stress-test → validate."));
 $("uploadBtn").addEventListener("click",()=>{$("upload").classList.toggle("open");$("file").click()});
 $("uploadNav").addEventListener("click",()=>{$("upload").classList.add("open");page("dashboard");$("file").click()});
 $("demoNav").addEventListener("click",()=>{rows=normalizeRows([...demo]);$("dataset").textContent="Demo retail dataset";dashboard();analyze($("q").value);sim();page("dashboard")});
