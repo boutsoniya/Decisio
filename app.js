@@ -7,6 +7,34 @@ const demo=[
 {Region:"East",Category:"Grocery",Revenue:63000,Profit:7560},{Region:"West",Category:"Grocery",Revenue:71000,Profit:9940}
 ];
 let rows=[...demo];
+// Lightweight schema mapping keeps the browser prototype useful with real-world column names.
+function cleanKey(k){return String(k||"").toLowerCase().replace(/[^a-z0-9]/g,"")}
+function mapField(keys, aliases){
+  for(const alias of aliases){const hit=keys.find(k=>cleanKey(k)===cleanKey(alias));if(hit)return hit}
+  for(const alias of aliases){const hit=keys.find(k=>cleanKey(k).includes(cleanKey(alias)));if(hit)return hit}
+}
+function normalizeRows(input){
+  if(!Array.isArray(input)||!input.length)return [];
+  const keys=Object.keys(input[0]||{});
+  const regionKey=mapField(keys,["Region","Area","Zone","Territory","Market"]);
+  const categoryKey=mapField(keys,["Category","Product Category","Segment","Department"]);
+  const revenueKey=mapField(keys,["Revenue","Sales","Sales Amount","Total Sales","Amount"]);
+  const profitKey=mapField(keys,["Profit","Net Profit","Gross Profit","Margin Value"]);
+  return input.map(r=>({
+    ...r,
+    Region: regionKey ? (r[regionKey]??"Unknown") : (r.Region??"Unknown"),
+    Category: categoryKey ? (r[categoryKey]??"Unknown") : (r.Category??"Unknown"),
+    Revenue: revenueKey ? num(r[revenueKey]) : num(r.Revenue),
+    Profit: profitKey ? num(r[profitKey]) : num(r.Profit)
+  }))
+}
+function schemaStatus(){
+  const sample=rows[0]||{}, keys=Object.keys(sample);
+  const required=["Region","Category","Revenue","Profit"];
+  const missing=required.filter(k=>!keys.includes(k));
+  return missing.length ? "Mapped · "+missing.length+" missing" : "Mapped · Ready";
+}
+
 const $=id=>document.getElementById(id);
 const num=x=>Number(String(x??"").replace(/[^0-9.-]/g,""))||0;
 const money=x=>"₹"+Math.round(x).toLocaleString("en-IN");
@@ -16,7 +44,7 @@ const categories=()=>{const m={};rows.forEach(r=>{m[r.Category]??={r:0,p:0};m[r.
 
 function renderRegions(){const a=regions(),mx=a[0]?.[1]||1;$("regionBars").innerHTML=a.map(x=>'<div class="region-bar"><b>'+money(x[1])+'</b><i style="height:'+Math.max(8,x[1]/mx*170)+'px"></i><span>'+x[0]+'</span></div>').join("")}
 function renderCats(){const a=categories(),mx=a[0]?.[1]||1;$("categoryBars").innerHTML=a.map(x=>'<div class="cat-row"><span>'+x[0]+'</span><i><b style="width:'+Math.max(8,x[1]/mx*100)+'%"></b></i><strong>'+(x[1]*100).toFixed(1)+'%</strong></div>').join("")}
-function dashboard(){const r=total("Revenue"),p=total("Profit"),a=regions(),c=categories();$("rev").textContent=money(r);$("profit").textContent=money(p);$("margin").textContent=(p/r*100).toFixed(1)+"%";$("records").textContent=rows.length;$("meta").textContent=rows.length+" rows · "+Object.keys(rows[0]||{}).length+" fields · ● Ready";renderRegions();renderCats();if(a[0]){$("insight1").textContent=a[0][0]+" leads revenue";$("insight1text").textContent=money(a[0][1])+" observed revenue."}if(c[0]){$("insight2").textContent=c[0][0]+" leads margin";$("insight2text").textContent=(c[0][1]*100).toFixed(1)+"% observed margin."}}
+function dashboard(){const r=total("Revenue"),p=total("Profit"),a=regions(),c=categories();$("rev").textContent=money(r);$("profit").textContent=money(p);$("margin").textContent=(p/r*100).toFixed(1)+"%";$("records").textContent=rows.length;$("meta").textContent=rows.length+" rows · "+Object.keys(rows[0]||{}).length+" fields · "+schemaStatus();renderRegions();renderCats();if(a[0]){$("insight1").textContent=a[0][0]+" leads revenue";$("insight1text").textContent=money(a[0][1])+" observed revenue."}if(c[0]){$("insight2").textContent=c[0][0]+" leads margin";$("insight2text").textContent=(c[0][1]*100).toFixed(1)+"% observed margin."}}
 function table(data,headers){$("etable").innerHTML='<table class="evidence"><thead><tr>'+headers.map(h=>"<th>"+h+"</th>").join("")+'</tr></thead><tbody>'+data.map(r=>"<tr>"+r.map((x,i)=>"<td class='"+(i===r.length-1&&String(x).includes("PASS")?"pass":"")+"'>"+x+"</td>").join("")+"</tr>").join("")+"</tbody></table>"}
 function answerMetrics(items){$("answerMetrics").innerHTML=items.map(x=>'<div class="metric"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join("")}
 function chart(title,html){return '<div class="answer-chart"><h4>'+title+'</h4>'+html+'</div>'}
@@ -29,8 +57,8 @@ $("ask").addEventListener("click",()=>{analyze($("q").value);page("answer")});$(
 $("slider").addEventListener("input",sim);
 $("uploadBtn").addEventListener("click",()=>{$("upload").classList.toggle("open");$("file").click()});
 $("uploadNav").addEventListener("click",()=>{$("upload").classList.add("open");page("dashboard");$("file").click()});
-$("demoNav").addEventListener("click",()=>{rows=[...demo];$("dataset").textContent="Demo retail dataset";dashboard();analyze($("q").value);sim();page("dashboard")});
-function loadFile(f){const x=/\.(xlsx|xls)$/i.test(f.name),reader=new FileReader();reader.onload=z=>{try{if(x){const w=XLSX.read(new Uint8Array(z.target.result),{type:"array"});rows=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:""})}else{const lines=z.target.result.trim().split(/\r?\n/);const h=lines.shift().split(",");rows=lines.map(s=>{const v=s.split(",");const o={};h.forEach((k,i)=>o[k.trim()]=v[i]?.trim()||"");return o})}$("dataset").textContent=f.name;dashboard();analyze($("q").value);sim()}catch(err){alert("Could not read file. Use CSV/XLSX with a header row.")}};x?reader.readAsArrayBuffer(f):reader.readAsText(f)}
+$("demoNav").addEventListener("click",()=>{rows=normalizeRows([...demo]);$("dataset").textContent="Demo retail dataset";dashboard();analyze($("q").value);sim();page("dashboard")});
+function loadFile(f){const x=/\.(xlsx|xls)$/i.test(f.name),reader=new FileReader();reader.onload=z=>{try{if(x){const w=XLSX.read(new Uint8Array(z.target.result),{type:"array"});rows=normalizeRows(XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:""}))}else{const lines=z.target.result.trim().split(/\r?\n/);const h=lines.shift().split(",");rows=normalizeRows(lines.map(s=>{const v=s.split(",");const o={};h.forEach((k,i)=>o[k.trim()]=v[i]?.trim()||"");return o}))}$("dataset").textContent=f.name;dashboard();analyze($("q").value);sim()}catch(err){alert("Could not read file. Use CSV/XLSX with a header row.")}};x?reader.readAsArrayBuffer(f):reader.readAsText(f)}
 $("file").addEventListener("change",e=>{const f=e.target.files[0];if(f)loadFile(f)});
 function resetWorkspace(){rows=[...demo];$("dataset").textContent="Demo retail dataset";$("q").value="Which region is driving the most revenue?";dashboard();analyze($("q").value);sim();page("dashboard");$("upload").classList.remove("open");$("file").value=""}
 function wireDropzone(){const dz=$("dropzone");if(!dz)return;["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag")}));["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("drag")}));dz.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)loadFile(f)})}
